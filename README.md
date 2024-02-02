@@ -15,6 +15,7 @@ Kotlin and Java classes work very well together (https://kotlinlang.org/docs/mix
 ## Start-up
 
 ### Starting the database
+    docker volume create --name=filedb-data
     docker-compose up -d
 
 ### Configuration
@@ -30,7 +31,7 @@ to your `/etc/hosts` file
 For basic auth, username is `admin` and password is `hunter2`
 
 ### Start from CLI
-
+    chmod 755 do.sh
     ./do.sh start
 
 For API documentation go to http://localhost:6011/docs

@@ -9,10 +9,13 @@ object JsonUtil {
     /**
      * Safely writes the input object into a JSON string
      */
-    fun toJson(obj: Any, usePrettyWriter: Boolean = false, formatDates: Boolean = false): String? {
+    fun toJson(
+        obj: Any,
+        usePrettyWriter: Boolean = false,
+        formatDates: Boolean = false,
+    ): String? {
         try {
-            val mapper = ObjectMapper()
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+            val mapper = ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 
             if (formatDates) {
                 mapper.dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm a z")

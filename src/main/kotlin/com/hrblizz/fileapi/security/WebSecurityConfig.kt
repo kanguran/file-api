@@ -9,9 +9,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Configuration
 internal class WebSecurityConfig(
     private val apiAuthenticationEntryPoint: ApiAuthenticationEntryPoint,
-    private val apiAuthenticationProvider: ApiAuthenticationProvider
+    private val apiAuthenticationProvider: ApiAuthenticationProvider,
 ) : WebSecurityConfigurerAdapter() {
-
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(apiAuthenticationProvider)
     }

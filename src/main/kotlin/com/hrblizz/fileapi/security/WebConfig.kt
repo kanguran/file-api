@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfig(
-    private val loggerRequestInterceptor: LoggerRequestInterceptor
+    private val loggerRequestInterceptor: LoggerRequestInterceptor,
 ) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(loggerRequestInterceptor)

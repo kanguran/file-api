@@ -20,7 +20,10 @@ class Logger {
         write("crit", logItem)
     }
 
-    private fun write(logLevel: String, logItem: LogItem) {
+    private fun write(
+        logLevel: String,
+        logItem: LogItem,
+    ) {
         println("$logLevel: $logItem")
     }
 }

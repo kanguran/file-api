@@ -9,7 +9,7 @@
 
 ## What You learned
 
-// Example: Learned the basics about Kotlin
+Spring boot 2.7 is vulnerable and has be migrated to V3 (Spring 6).
 
 ## TODOs
 

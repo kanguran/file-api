@@ -11,7 +11,7 @@ import java.util.UUID
 
 @RestController
 class StatusController(
-    private val entityRepository: EntityRepository
+    private val entityRepository: EntityRepository,
 ) {
     @RequestMapping("/status", method = [RequestMethod.GET])
     fun getStatus(): ResponseEntity<Map<String, Any>> {
@@ -19,14 +19,14 @@ class StatusController(
             Entity().also {
                 it.name = UUID.randomUUID().toString()
                 it.value = "asd"
-            }
+            },
         )
 
         return ResponseEntity(
             mapOf(
-                "ok" to true
+                "ok" to true,
             ),
-            HttpStatus.OK.value()
+            HttpStatus.OK.value(),
         )
     }
 }

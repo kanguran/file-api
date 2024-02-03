@@ -6,7 +6,7 @@ import java.io.StringWriter
 
 open class ExceptionLogItem constructor(
     message: String,
-    @JsonIgnore val exception: Exception
+    @JsonIgnore val exception: Exception,
 ) : LogItem("$message: <${exception::class.java.name}>") {
     val stacktrace: String
 

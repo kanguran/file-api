@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class LoggerRequestInterceptor(
-    private val logger: Logger
+    private val logger: Logger,
 ) : HandlerInterceptor {
-
     override fun preHandle(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        handler: Any
+        handler: Any,
     ): Boolean {
         request.setAttribute("start_time", System.currentTimeMillis())
         return true
@@ -25,15 +24,15 @@ class LoggerRequestInterceptor(
         request: HttpServletRequest,
         response: HttpServletResponse,
         handler: Any,
-        ex: Exception?
+        ex: Exception?,
     ) {
         this.logger.info(
             TraceLogItem(
                 request.method,
                 request.requestURL.toString(),
                 response.status.toLong(),
-                System.currentTimeMillis() - (request.getAttribute("start_time") as Long)
-            )
+                System.currentTimeMillis() - (request.getAttribute("start_time") as Long),
+            ),
         )
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class ApiAuthenticationProvider : AuthenticationProvider {
-
     override fun authenticate(authentication: Authentication): Authentication {
         val name = authentication.name
         val password = authentication.credentials.toString()

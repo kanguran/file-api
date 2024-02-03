@@ -26,15 +26,14 @@ import java.util.ArrayList
 
 @ControllerAdvice
 class RestExceptionHandler(
-    private val log: Logger
+    private val log: Logger,
 ) : ResponseEntityExceptionHandler() {
-
     override fun handleExceptionInternal(
         e: Exception,
         body: Any?,
         headers: HttpHeaders?,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         if (status.is5xxServerError) {
             log.crit(ExceptionLogItem("Internal exception: " + e.message, e))
@@ -44,11 +43,12 @@ class RestExceptionHandler(
             return ResponseEntity(body, headers, status)
         }
 
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(status.reasonPhrase)),
-            status.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(status.reasonPhrase)),
+                status.value(),
+            )
         return ResponseEntity(apiError, headers, status)
     }
 
@@ -56,7 +56,7 @@ class RestExceptionHandler(
         ex: MethodArgumentNotValidException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val errors = ArrayList<ErrorMessage>()
         for (error in ex.bindingResult.fieldErrors) {
@@ -76,7 +76,7 @@ class RestExceptionHandler(
         ex: BindException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val errors = ArrayList<ErrorMessage>()
         for (error in ex.bindingResult.fieldErrors) {
@@ -96,14 +96,16 @@ class RestExceptionHandler(
         ex: TypeMismatchException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage("${ex.value} value for ${ex.propertyName} should be of type ${ex.requiredType}")),
-            errorStatus.value()
-        )
+
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage("${ex.value} value for ${ex.propertyName} should be of type ${ex.requiredType}")),
+                errorStatus.value(),
+            )
         return handleExceptionInternal(ex, apiError, headers, errorStatus, request)
     }
 
@@ -111,14 +113,15 @@ class RestExceptionHandler(
         ex: MissingServletRequestPartException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage("${ex.requestPartName} part is missing")),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage("${ex.requestPartName} part is missing")),
+                errorStatus.value(),
+            )
         return handleExceptionInternal(ex, apiError, headers, errorStatus, request)
     }
 
@@ -126,55 +129,78 @@ class RestExceptionHandler(
         ex: MissingServletRequestParameterException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage("${ex.parameterName} parameter is missing")),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage("${ex.parameterName} parameter is missing")),
+                errorStatus.value(),
+            )
         return handleExceptionInternal(ex, apiError, headers, errorStatus, request)
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun handleMethodArgumentTypeMismatch(ex: MethodArgumentTypeMismatchException, request: WebRequest): ResponseEntity<Any> {
+    fun handleMethodArgumentTypeMismatch(
+        ex: MethodArgumentTypeMismatchException,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage("${ex.name} should be of type ${ex.requiredType?.name}")),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage("${ex.name} should be of type ${ex.requiredType?.name}")),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 
-    override fun handleNoHandlerFoundException(ex: NoHandlerFoundException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleNoHandlerFoundException(
+        ex: NoHandlerFoundException,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.NOT_FOUND
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(errorStatus.reasonPhrase)),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(errorStatus.reasonPhrase)),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 
-    override fun handleHttpRequestMethodNotSupported(ex: HttpRequestMethodNotSupportedException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleHttpRequestMethodNotSupported(
+        ex: HttpRequestMethodNotSupportedException,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.METHOD_NOT_ALLOWED
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(errorStatus.reasonPhrase)),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(errorStatus.reasonPhrase)),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 
-    override fun handleHttpMediaTypeNotSupported(ex: HttpMediaTypeNotSupportedException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    override fun handleHttpMediaTypeNotSupported(
+        ex: HttpMediaTypeNotSupportedException,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(errorStatus.reasonPhrase)),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(errorStatus.reasonPhrase)),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 
@@ -185,35 +211,41 @@ class RestExceptionHandler(
             status = HttpStatus.BAD_REQUEST
         }
 
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(ex.message)),
-            status.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(ex.message)),
+                status.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), status)
     }
 
     @ExceptionHandler(AccessDeniedException::class)
     fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<Any> {
         val errorStatus = HttpStatus.UNAUTHORIZED
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage(ex.message)),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage(ex.message)),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleAll(ex: Exception, request: WebRequest): ResponseEntity<Any> {
+    fun handleAll(
+        ex: Exception,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         this.log.error(ExceptionLogItem("Unhandled exception: ${ex.localizedMessage}", ex))
 
         val errorStatus = HttpStatus.INTERNAL_SERVER_ERROR
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(
-            null,
-            listOf(ErrorMessage("Unknown error occurred")),
-            errorStatus.value()
-        )
+        val apiError =
+            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+                null,
+                listOf(ErrorMessage("Unknown error occurred")),
+                errorStatus.value(),
+            )
         return ResponseEntity(apiError, HttpHeaders(), errorStatus)
     }
 

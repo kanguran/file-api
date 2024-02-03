@@ -28,7 +28,7 @@ object JsonUtil {
             }
             return writer.writeValueAsString(obj)
         } catch (e: JsonProcessingException) {
-            // Do nothing
+            // TODO Log Error
         }
 
         return null

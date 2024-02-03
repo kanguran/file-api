@@ -4,8 +4,6 @@ class ErrorMessage {
     var message: String? = null
     var code: String? = null
 
-    constructor() {}
-
     constructor(message: String?) {
         this.message = message
     }

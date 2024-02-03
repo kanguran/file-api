@@ -39,12 +39,12 @@ class RestExceptionHandler(
             log.crit(ExceptionLogItem("Internal exception: " + e.message, e))
         }
 
-        if (body != null && body is com.hrblizz.fileapi.rest.ResponseEntity<*>) {
+        if (body != null && body is com.hrblizz.fileapi.dto.FileResponse<*>) {
             return ResponseEntity(body, headers, status)
         }
 
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(status.reasonPhrase)),
                 status.value(),
@@ -67,7 +67,7 @@ class RestExceptionHandler(
         }
 
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(null, errors, errorStatus.value())
+        val apiError = com.hrblizz.fileapi.dto.FileResponse<Any>(null, errors, errorStatus.value())
 
         return handleExceptionInternal(ex, apiError, headers, errorStatus, request)
     }
@@ -87,7 +87,7 @@ class RestExceptionHandler(
         }
 
         val errorStatus = HttpStatus.BAD_REQUEST
-        val apiError = com.hrblizz.fileapi.rest.ResponseEntity<Any>(null, errors, errorStatus.value())
+        val apiError = com.hrblizz.fileapi.dto.FileResponse<Any>(null, errors, errorStatus.value())
 
         return handleExceptionInternal(ex, apiError, headers, errorStatus, request)
     }
@@ -100,8 +100,9 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
 
+        // TODO investigate how refactor this code and remove duplcaited methods.
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage("${ex.value} value for ${ex.propertyName} should be of type ${ex.requiredType}")),
                 errorStatus.value(),
@@ -117,7 +118,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage("${ex.requestPartName} part is missing")),
                 errorStatus.value(),
@@ -133,7 +134,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage("${ex.parameterName} parameter is missing")),
                 errorStatus.value(),
@@ -148,7 +149,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage("${ex.name} should be of type ${ex.requiredType?.name}")),
                 errorStatus.value(),
@@ -164,7 +165,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.NOT_FOUND
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(errorStatus.reasonPhrase)),
                 errorStatus.value(),
@@ -180,7 +181,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.METHOD_NOT_ALLOWED
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(errorStatus.reasonPhrase)),
                 errorStatus.value(),
@@ -196,7 +197,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(errorStatus.reasonPhrase)),
                 errorStatus.value(),
@@ -212,7 +213,7 @@ class RestExceptionHandler(
         }
 
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(ex.message)),
                 status.value(),
@@ -224,7 +225,7 @@ class RestExceptionHandler(
     fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<Any> {
         val errorStatus = HttpStatus.UNAUTHORIZED
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage(ex.message)),
                 errorStatus.value(),
@@ -241,7 +242,7 @@ class RestExceptionHandler(
 
         val errorStatus = HttpStatus.INTERNAL_SERVER_ERROR
         val apiError =
-            com.hrblizz.fileapi.rest.ResponseEntity<Any>(
+            com.hrblizz.fileapi.dto.FileResponse<Any>(
                 null,
                 listOf(ErrorMessage("Unknown error occurred")),
                 errorStatus.value(),

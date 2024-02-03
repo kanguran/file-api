@@ -1,6 +1,6 @@
 package com.hrblizz.fileapi.data.repository
 
-import com.hrblizz.fileapi.data.entities.Entity
+import com.hrblizz.fileapi.data.entities.File
 import org.springframework.data.mongodb.repository.MongoRepository
 
-interface EntityRepository : MongoRepository<Entity, Long>
+interface FileRepository : MongoRepository<File, Long>

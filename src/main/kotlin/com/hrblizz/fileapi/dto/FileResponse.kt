@@ -1,16 +1,14 @@
-package com.hrblizz.fileapi.rest
+package com.hrblizz.fileapi.dto
 
-class ResponseEntity<T> {
+import com.hrblizz.fileapi.rest.ErrorMessage
+
+class FileResponse<T> {
     var data: T? = null
 
     var errors: List<ErrorMessage>? = null
 
     var status: Int = 0
         private set
-
-    constructor(status: Int) {
-        this.status = status
-    }
 
     constructor(data: T?, status: Int) : this(data, null, status) {}
 

@@ -11,6 +11,13 @@ paths:
       responses:
         '200':
           description: It's a response.
+  /file/:
+    get:
+      summary: Get File
+      description: Get File Response.
+      responses:
+        '200':
+          description: It's a response.
 
 security:
   - basicAuth: []

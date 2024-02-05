@@ -1,6 +1,4 @@
-package com.hrblizz.fileapi.dto
-
-import com.hrblizz.fileapi.rest.ErrorMessage
+package com.hrblizz.fileapi.payload.response
 
 class FileResponse<T> {
     var data: T? = null

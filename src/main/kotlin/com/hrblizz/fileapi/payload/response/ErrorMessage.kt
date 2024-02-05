@@ -1,4 +1,4 @@
-package com.hrblizz.fileapi.rest
+package com.hrblizz.fileapi.payload.response
 
 class ErrorMessage {
     var message: String? = null

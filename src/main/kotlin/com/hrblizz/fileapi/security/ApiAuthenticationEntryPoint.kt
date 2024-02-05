@@ -1,8 +1,8 @@
 package com.hrblizz.fileapi.security
 
-import com.hrblizz.fileapi.dto.FileResponse
 import com.hrblizz.fileapi.library.JsonUtil
-import com.hrblizz.fileapi.rest.ErrorMessage
+import com.hrblizz.fileapi.payload.response.ErrorMessage
+import com.hrblizz.fileapi.payload.response.FileResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException

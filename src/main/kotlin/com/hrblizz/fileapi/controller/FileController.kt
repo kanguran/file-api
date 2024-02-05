@@ -3,6 +3,7 @@ package com.hrblizz.fileapi.controller
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -97,12 +98,12 @@ class FileController(
         // TODO> call getFilesMetasResponse
         return fileService.getFileResponse(UUID.fromString(tokens.last()))
     }
+
+    @DeleteMapping("/file/{token}")
+    fun deleteFile(
+        @PathVariable token: String,
+    ): FileResponse<Map<String, Any>> {
+        // TODO *GET file metadata endpoint*
+        return fileService.deleteFile(UUID.fromString(token))
+    }
 }
-
-/*
-*File delete*
-
-DELETE /file/{token}
-
-*GET file metadata endpoint*
-*/

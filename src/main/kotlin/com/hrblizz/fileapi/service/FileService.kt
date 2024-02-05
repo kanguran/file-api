@@ -96,11 +96,31 @@ class FileService(
         )
     }
 
-    fun getDeleteResponse(token: UUID) {
+    fun deleteFile(token: UUID): FileResponse<Map<String, Any>> {
         /**
          1. check UUID is valid
          2. check file exists with given UUID
          3. Delete file by Uuid.
          */
+        if (getFileResponse(token).status.equals(HttpStatus.OK.value())) {
+            // TODO load metadata
+            // try
+            entityRepository.deleteById(token)
+
+            return FileResponse(
+                mapOf(
+                    "ok" to true,
+                ),
+                HttpStatus.OK.value(),
+            )
+        }
+
+        return FileResponse(
+            mapOf(
+                "ok" to false,
+            ),
+            listOf(ErrorMessage("Delete failed", HttpStatus.NOT_FOUND.value().toString())),
+            HttpStatus.NOT_FOUND.value(),
+        )
     }
 }

@@ -4,20 +4,36 @@ info:
   title: File API
 
 paths:
-  /status:
-    get:
-      summary: Status
-      description: Get Status.
+  /files:
+    post:
+      summary: File upload
+      description: It's a multipart/form-data request.
       responses:
         '200':
-          description: It's a response.
+          description: Retrieve multipart Files token.
+
+  /files/metas:
+    post:
+      summary: GET file metadata endpoint
+      description: User can request metadata for the token, 
+        multiple tokens metadata can be queried for in a single request.
+      responses:
+        '200':
+          description: Retrieve multiple tokens metadata.
+
   /file/:
     get:
       summary: Get File
-      description: Get File Response.
+      description: File download endpoint.
       responses:
         '200':
-          description: It's a response.
+          description: Returns the file in the body + additional headers.
+    delete:
+      summary: Delete File
+      description: Delete File and receive deleted file metadata endpoint.
+      responses:
+        '200':
+          description: GET file metadata endpoint.
 
 security:
   - basicAuth: []

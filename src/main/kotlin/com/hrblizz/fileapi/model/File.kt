@@ -1,5 +1,6 @@
 package com.hrblizz.fileapi.model
 
+import com.hrblizz.fileapi.model.enumeration.FileSource
 import org.springframework.data.annotation.Id
 import java.util.Date
 import java.util.UUID
@@ -10,12 +11,9 @@ class File {
     lateinit var name: String
     lateinit var contentType: String
     lateinit var meta: String // JSON of additional meta. Example: {"creatorEmployeeId": 1}
-
-    // TODO create Source enum once all the values are known.
-    lateinit var source: String // timesheet, mss, hrb, ...
+    lateinit var source: FileSource
     var expireTime: Date? = null
     lateinit var createTime: Date
-
-    // TODO lateinit var content: File  // file content
+    lateinit var content: ByteArray
     var size: Long = 0
 }

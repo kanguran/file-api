@@ -1,6 +1,7 @@
 package com.hrblizz.fileapi.service
 
 import com.hrblizz.fileapi.model.File
+import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.ErrorMessage
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.repository.FileRepository
@@ -74,17 +75,25 @@ class FileService(
         }
     }
 
-    fun saveFiles(files: MultipartFile): FileResponse<Map<String, Any>> {
+    fun saveFiles(
+        files: MultipartFile,
+        meta: String,
+        source: FileSource,
+        expireTime: Date?,
+    ): FileResponse<Map<String, Any>> {
         val newFileUUID = getFreeUUID()
+
         entityRepository.save(
             File().also {
                 it.token = newFileUUID
-                it.name = newFileUUID.toString()
+                it.name = files.originalFilename
                 it.contentType = files.contentType
-                it.meta = "meta"
-                it.source = "timesheet"
+                it.meta = meta
+                it.source = source
                 it.createTime = Date()
-                it.size = 222
+                it.expireTime = expireTime
+                it.content = files.bytes
+                it.size = files.size
             },
         )
 
@@ -94,6 +103,7 @@ class FileService(
             ),
             HttpStatus.OK.value(),
         )
+        // TODO retrieve Error response.
     }
 
     fun deleteFile(token: UUID): FileResponse<Map<String, Any>> {

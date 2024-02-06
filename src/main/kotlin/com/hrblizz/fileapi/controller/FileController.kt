@@ -1,5 +1,6 @@
 package com.hrblizz.fileapi.controller
 
+import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.http.MediaType
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.util.Date
 import java.util.UUID
 
 @RestController
@@ -52,13 +54,20 @@ class FileController(
     > HTTP 201
     {
         "token": "file-token-1"
-    }*/
+    }
 
+      name and contentType request fields are not needed because they can be read from MultipartFile
+*/
     @PostMapping("/files", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun handleFileUpload(
-        @RequestPart("files") files: MultipartFile,
+        @RequestPart("content") files: MultipartFile,
+        @RequestPart("meta") meta: String,
+        @RequestPart("source") source: String,
+// TODO @RequestPart("source") source: FileSource,
+// TODO @RequestPart("expireTime") expireTime: Date?,
+        @RequestPart("expireTime") expireTime: String,
     ): FileResponse<Map<String, Any>> {
-        return fileService.saveFiles(files)
+        return fileService.saveFiles(files, meta, FileSource.valueOf(source), Date())
     }
 
 /*  *GET file metdata endpoint*

@@ -18,7 +18,7 @@ object JsonUtil {
             val mapper = ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
 
             if (formatDates) {
-                mapper.dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm a z")
+                mapper.dateFormat = SimpleDateFormat(com.hrblizz.fileapi.TIMESTAMP_FORMAT)
             }
 
             var writer = mapper.writer()

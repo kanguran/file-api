@@ -100,7 +100,7 @@ class RestExceptionHandler(
     ): ResponseEntity<Any> {
         val errorStatus = HttpStatus.BAD_REQUEST
 
-        // TODO investigate how refactor this code and remove duplcaited methods.
+        // TODO investigate how refactor this code and remove duplicated methods.
         val apiError =
             FileResponse<Any>(
                 null,

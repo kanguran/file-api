@@ -16,6 +16,7 @@ Kotlin and Java classes work very well together (https://kotlinlang.org/docs/mix
 
 ### Starting the database
     docker volume create --name=filedb-data
+    docker volume create --name=filetestdb-data
     docker-compose up -d
 
 ### Configuration
@@ -26,6 +27,7 @@ See `variables.env` file
 In development add
 
     127.0.0.1    filedb
+    127.0.0.1    filetestdb
 to your `/etc/hosts` file
 
 For basic auth, username is `admin` and password is `hunter2`

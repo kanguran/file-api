@@ -9,7 +9,7 @@ import java.util.TimeZone
 import javax.annotation.PostConstruct
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = ["com.hrblizz.fileapi.data.repository"])
+@EnableMongoRepositories(basePackages = ["com.hrblizz.fileapi.repository"])
 class Application : SpringBootServletInitializer() {
     override fun configure(application: SpringApplicationBuilder): SpringApplicationBuilder {
         return application.sources(Application::class.java)

@@ -1,8 +1,8 @@
 package com.hrblizz.fileapi.security
 
 import com.hrblizz.fileapi.library.JsonUtil
-import com.hrblizz.fileapi.rest.ErrorMessage
-import com.hrblizz.fileapi.rest.ResponseEntity
+import com.hrblizz.fileapi.payload.response.ErrorMessage
+import com.hrblizz.fileapi.payload.response.FileResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
@@ -22,9 +22,9 @@ internal class ApiAuthenticationEntryPoint : AuthenticationEntryPoint {
         response.contentType = MediaType.APPLICATION_JSON_VALUE
 
         val writer = response.writer
-        val responseEntity = ResponseEntity(null, listOf(ErrorMessage(authEx.message)), HttpStatus.UNAUTHORIZED.value())
+        val fileResponse = FileResponse(null, listOf(ErrorMessage(authEx.message)), HttpStatus.UNAUTHORIZED.value())
 
-        writer.println(JsonUtil.toJson(responseEntity))
+        writer.println(JsonUtil.toJson(fileResponse))
         writer.flush()
         writer.close()
     }

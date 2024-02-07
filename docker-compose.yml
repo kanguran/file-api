@@ -12,6 +12,19 @@ services:
       - 27027:27017
     command: mongod --logpath=/dev/null # --quiet
 
+  filetestdb:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - filetestdb-data:/data/db
+    ports:
+      - 27077:27017
+    command: mongod --logpath=/dev/null # --quiet
+
 volumes:
   filedb-data:
+    external: true
+  filetestdb-data:
     external: true

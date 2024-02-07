@@ -1,10 +1,8 @@
-package com.hrblizz.fileapi.rest
+package com.hrblizz.fileapi.payload.response
 
 class ErrorMessage {
     var message: String? = null
     var code: String? = null
-
-    constructor() {}
 
     constructor(message: String?) {
         this.message = message

@@ -10,7 +10,7 @@ class File {
     lateinit var token: UUID
     lateinit var name: String
     lateinit var contentType: String
-    lateinit var meta: String // JSON of additional meta. Example: {"creatorEmployeeId": 1}
+    var meta: String? = null // JSON of additional meta. Example: {"creatorEmployeeId": 1}
     lateinit var source: FileSource
     var expireTime: Date? = null
     lateinit var createTime: Date

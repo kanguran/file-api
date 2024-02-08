@@ -1,5 +1,6 @@
 package com.hrblizz.fileapi.controller
 
+import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.service.FileService
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -101,12 +103,11 @@ class FileController(
         }
         }*/
 
-    @PostMapping("/files/metas")
+    @PostMapping("/files/metas", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getFilesMetas(
-        @RequestPart("tokens") tokens: List<String>,
+        @RequestBody tokens: FileMeta,
     ): FileResponse<Map<String, Any>> {
-        // TODO> call getFilesMetasResponse
-        return fileService.getFileResponse(UUID.fromString(tokens.last()))
+        return fileService.getFilesMetasResponse(tokens)
     }
 
     @DeleteMapping("/file/{token}")

@@ -1,6 +1,8 @@
 package com.hrblizz.fileapi.service
 
+import com.hrblizz.fileapi.library.JsonUtil
 import com.hrblizz.fileapi.model.File
+import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.ErrorMessage
 import com.hrblizz.fileapi.payload.response.FileResponse
@@ -37,18 +39,17 @@ class FileService(
         // TODO return ErrorResponse on Error with code.
     }
 
-    fun getFilesMetasResponse(tokens: List<String>): FileResponse<Map<String, Any>> {
-        // TODO if File exists return FileResponse
+    fun getFilesMetasResponse(tokens: FileMeta): FileResponse<Map<String, Any>> {
+        var uuidList: ArrayList<UUID> = ArrayList()
 
-        /* loop tokens
-            getFileById
-            populate Response
-        end loop
+        tokens.tokens.onEach {
+            uuidList.add(UUID.fromString(it))
+        }
 
-        return Response           */
+        val files = entityRepository.findAllById(uuidList)
 
-        val file = entityRepository.findById(UUID.fromString(tokens.last()))
-        if (file.isPresent) {
+        if (files.count() > 0) {
+            // TODO Return list of metas
             return FileResponse(
                 mapOf(
                     "ok" to true,
@@ -77,10 +78,22 @@ class FileService(
 
     fun saveFiles(
         files: MultipartFile,
-        meta: String,
+        meta: String?,
         source: FileSource,
         expireTime: Date?,
     ): FileResponse<Map<String, Any>> {
+        var metaJson = meta
+        try {
+            metaJson = meta?.let { JsonUtil.toJson(meta) }
+        } catch (e: Error) {
+            return FileResponse(
+                mapOf(
+                    "" to String,
+                ),
+                HttpStatus.BAD_REQUEST.value(),
+            )
+        }
+
         val newFileUUID = getFreeUUID()
 
         entityRepository.save(
@@ -88,7 +101,7 @@ class FileService(
                 it.token = newFileUUID
                 it.name = files.originalFilename
                 it.contentType = files.contentType
-                it.meta = meta
+                it.meta = metaJson
                 it.source = source
                 it.createTime = Date()
                 it.expireTime = expireTime

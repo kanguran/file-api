@@ -18,51 +18,59 @@ class FileService(
     var entityRepository: FileRepository,
 ) {
     fun getFileResponse(token: UUID): FileResponse<Map<String, Any>> {
-        // TODO if File exists return FileResponse
-        val file = entityRepository.findById(token)
-        if (file.isPresent) {
-            return FileResponse(
-                mapOf(
-                    "ok" to true,
-                ),
-                HttpStatus.OK.value(),
-            )
-        } else {
-            return FileResponse(
-                mapOf(
-                    "ok" to false,
-                ),
-                listOf(ErrorMessage("File Not found", HttpStatus.NOT_FOUND.value().toString())),
-                HttpStatus.NOT_FOUND.value(),
+        try {
+            val file = entityRepository.findById(token)
+            if (file.isPresent) {
+                return composeFileResponse(
+                    mapOf("ok" to true),
+                    "",
+                    HttpStatus.OK,
+                )
+            } else {
+                return composeFileResponse(
+                    mapOf("ok" to false),
+                    "File Not found",
+                    HttpStatus.NOT_FOUND,
+                )
+            }
+        } catch (e: Exception) {
+            return composeFileResponse(
+                mapOf("ok" to false),
+                "Get File operation failed: " + e.message,
+                HttpStatus.SERVICE_UNAVAILABLE,
             )
         }
-        // TODO return ErrorResponse on Error with code.
     }
 
     fun getFilesMetasResponse(tokens: FileMeta): FileResponse<Map<String, Any>> {
         var uuidList: ArrayList<UUID> = ArrayList()
 
-        tokens.tokens.onEach {
-            uuidList.add(UUID.fromString(it))
-        }
+        try {
+            tokens.tokens.onEach {
+                uuidList.add(UUID.fromString(it))
+            }
 
-        val files = entityRepository.findAllById(uuidList)
+            val files = entityRepository.findAllById(uuidList)
 
-        if (files.count() > 0) {
-            // TODO Return list of metas
-            return FileResponse(
-                mapOf(
-                    "ok" to true,
-                ),
-                HttpStatus.OK.value(),
-            )
-        } else {
-            return FileResponse(
-                mapOf(
-                    "ok" to false,
-                ),
-                listOf(ErrorMessage("File Not found", HttpStatus.NOT_FOUND.value().toString())),
-                HttpStatus.NOT_FOUND.value(),
+            if (files.count() > 0) {
+                // TODO Return list of metas
+                return composeFileResponse(
+                    mapOf("ok" to true),
+                    "",
+                    HttpStatus.NOT_FOUND,
+                )
+            } else {
+                return composeFileResponse(
+                    mapOf("ok" to false),
+                    "FileMeta data not found",
+                    HttpStatus.NOT_FOUND,
+                )
+            }
+        } catch (e: Exception) {
+            return composeFileResponse(
+                mapOf("ok" to false),
+                "FileMeta data search operation failed: " + e.message,
+                HttpStatus.SERVICE_UNAVAILABLE,
             )
         }
     }
@@ -86,37 +94,41 @@ class FileService(
         try {
             metaJson = meta?.let { JsonUtil.toJson(meta) }
         } catch (e: Error) {
-            return FileResponse(
-                mapOf(
-                    "" to String,
-                ),
-                HttpStatus.BAD_REQUEST.value(),
+            return composeFileResponse(
+                mapOf("" to String),
+                "Meta JSON parsing operation failed",
+                HttpStatus.SERVICE_UNAVAILABLE,
             )
         }
 
         val newFileUUID = getFreeUUID()
 
-        entityRepository.save(
-            File().also {
-                it.token = newFileUUID
-                it.name = files.originalFilename
-                it.contentType = files.contentType
-                it.meta = metaJson
-                it.source = source
-                it.createTime = Date()
-                it.expireTime = expireTime
-                it.content = files.bytes
-                it.size = files.size
-            },
-        )
-
-        return FileResponse(
-            mapOf(
-                newFileUUID.toString() to String,
-            ),
-            HttpStatus.OK.value(),
-        )
-        // TODO retrieve Error response.
+        try {
+            entityRepository.save(
+                File().also {
+                    it.token = newFileUUID
+                    it.name = files.originalFilename
+                    it.contentType = files.contentType
+                    it.meta = metaJson
+                    it.source = source
+                    it.createTime = Date()
+                    it.expireTime = expireTime
+                    it.content = files.bytes
+                    it.size = files.size
+                },
+            )
+            return composeFileResponse(
+                mapOf(newFileUUID.toString() to String),
+                "Files saved: ",
+                HttpStatus.OK,
+            )
+        } catch (e: Exception) {
+            return composeFileResponse(
+                mapOf(newFileUUID.toString() to String),
+                "Files save operation failed: " + e.message,
+                HttpStatus.SERVICE_UNAVAILABLE,
+            )
+        }
     }
 
     fun deleteFile(token: UUID): FileResponse<Map<String, Any>> {
@@ -125,25 +137,37 @@ class FileService(
          2. check file exists with given UUID
          3. Delete file by Uuid.
          */
-        if (getFileResponse(token).status.equals(HttpStatus.OK.value())) {
+        try {
             // TODO load metadata
-            // try
-            entityRepository.deleteById(token)
+            if (getFileResponse(token).status == HttpStatus.OK.value()) {
+                entityRepository.deleteById(token)
 
-            return FileResponse(
-                mapOf(
-                    "ok" to true,
-                ),
-                HttpStatus.OK.value(),
+                return composeFileResponse(mapOf("ok" to true), "Deleted", HttpStatus.OK)
+            } else {
+                return composeFileResponse(
+                    mapOf("ok" to false),
+                    "Files with Given token not found",
+                    HttpStatus.NOT_FOUND,
+                )
+            }
+        } catch (e: Exception) {
+            return composeFileResponse(
+                mapOf("ok" to false),
+                "Files Delete operation failed:" + e.message,
+                HttpStatus.SERVICE_UNAVAILABLE,
             )
         }
+    }
 
+    fun composeFileResponse(
+        response: Map<String, Any>,
+        message: String,
+        httpStatusCode: HttpStatus,
+    ): FileResponse<Map<String, Any>> {
         return FileResponse(
-            mapOf(
-                "ok" to false,
-            ),
-            listOf(ErrorMessage("Delete failed", HttpStatus.NOT_FOUND.value().toString())),
-            HttpStatus.NOT_FOUND.value(),
+            response,
+            listOf(ErrorMessage(message, httpStatusCode.value().toString())),
+            httpStatusCode.value(),
         )
     }
 }

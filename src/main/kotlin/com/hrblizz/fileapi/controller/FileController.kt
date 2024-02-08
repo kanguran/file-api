@@ -36,9 +36,9 @@ class FileController(
 
     @GetMapping("/file/{token}")
     fun getFile(
-        @PathVariable token: UUID,
+        @PathVariable token: String,
     ): FileResponse<Map<String, Any>> {
-        return fileService.getFileResponse(token)
+        return fileService.getFileResponse(UUID.fromString(token))
     }
 
     /*    *File upload*

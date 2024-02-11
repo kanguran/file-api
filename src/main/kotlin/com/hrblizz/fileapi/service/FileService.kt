@@ -56,14 +56,16 @@ class FileService(
             if (files.count() > 0) {
                 val filesMap = mutableMapOf<String, MutableMap<String, String>>()
 
-                files.associateTo(filesMap) { it.token.toString() to mutableMapOf(
-                    "token" to it.token.toString(),
-                    "filename" to it.name,
-                    "size" to it.size.toString(),
-                    "contentType" to it.contentType,
-                    "createTime" to it.createTime.toString(),
-                    "meta" to it.meta.toString()
-                )
+                files.associateTo(filesMap) {
+                    it.token.toString() to
+                        mutableMapOf(
+                            "token" to it.token.toString(),
+                            "filename" to it.name,
+                            "size" to it.size.toString(),
+                            "contentType" to it.contentType,
+                            "createTime" to it.createTime.toString(),
+                            "meta" to it.meta.toString(),
+                        )
                 }
 
                 return FileMetaResponse(

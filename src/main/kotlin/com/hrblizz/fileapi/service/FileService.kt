@@ -5,6 +5,7 @@ import com.hrblizz.fileapi.model.File
 import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.ErrorMessage
+import com.hrblizz.fileapi.payload.response.FileMetaResponse
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.repository.FileRepository
 import org.springframework.http.HttpStatus
@@ -42,7 +43,7 @@ class FileService(
         }
     }
 
-    fun getFilesMetasResponse(tokens: FileMeta): FileResponse<Map<String, Any>> {
+    fun getFilesMetasResponse(tokens: FileMeta): FileMetaResponse<Map<String, Any>> {
         var uuidList: ArrayList<UUID> = ArrayList()
 
         try {
@@ -53,24 +54,34 @@ class FileService(
             val files = entityRepository.findAllById(uuidList)
 
             if (files.count() > 0) {
-                // TODO Return list of metas
-                return composeFileResponse(
-                    mapOf("ok" to true),
-                    "",
-                    HttpStatus.NOT_FOUND,
+                val filesMap = mutableMapOf<String, MutableMap<String, String>>()
+
+                files.associateTo(filesMap) { it.token.toString() to mutableMapOf(
+                    "token" to it.token.toString(),
+                    "filename" to it.name,
+                    "size" to it.size.toString(),
+                    "contentType" to it.contentType,
+                    "createTime" to it.createTime.toString(),
+                    "meta" to it.meta.toString()
+                )
+                }
+
+                return FileMetaResponse(
+                    filesMap,
+                    HttpStatus.OK.value(),
                 )
             } else {
-                return composeFileResponse(
+                return FileMetaResponse(
                     mapOf("ok" to false),
-                    "FileMeta data not found",
-                    HttpStatus.NOT_FOUND,
+                    listOf(error("FileMeta data not found")),
+                    HttpStatus.NOT_FOUND.value(),
                 )
             }
         } catch (e: Exception) {
-            return composeFileResponse(
+            return FileMetaResponse(
                 mapOf("ok" to false),
-                "FileMeta data search operation failed: " + e.message,
-                HttpStatus.SERVICE_UNAVAILABLE,
+                listOf(error("FileMeta data search operation failed: " + e.message)),
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
             )
         }
     }

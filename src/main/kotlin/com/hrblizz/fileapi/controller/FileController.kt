@@ -2,6 +2,7 @@ package com.hrblizz.fileapi.controller
 
 import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
+import com.hrblizz.fileapi.payload.response.FileMetaResponse
 import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.format.annotation.DateTimeFormat
@@ -106,7 +107,7 @@ class FileController(
     @PostMapping("/files/metas", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getFilesMetas(
         @RequestBody tokens: FileMeta,
-    ): FileResponse<Map<String, Any>> {
+    ): FileMetaResponse<Map<String, Any>> {
         return fileService.getFilesMetasResponse(tokens)
     }
 

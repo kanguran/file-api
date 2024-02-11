@@ -15,8 +15,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.util.*
-
+import java.util.Date
+import java.util.UUID
 
 @Service
 class FileService(
@@ -48,26 +48,24 @@ class FileService(
     }
 
     fun getFileBodyResponse(token: UUID): ResponseEntity<Any> {
-
         try {
             val file = entityRepository.findById(token)
             if (file.isPresent) {
                 val resource = ByteArrayResource(file.get().content)
 
-                //TODO: Return Header
-                /*
-                    > HTTP 200
-    X-Filename: "example.pdf"
-    X-Filesize: "525"
-    X-CreateTime: "2019-11-21T15:42:22Z"
-    Content-Type: "application/pdf"
+                // TODO: Return Header
 
+                /* HTTP 200
+                 X-Filename: "example.pdf"
+                 X-Filesize: "525"
+                 X-CreateTime: "2019-11-21T15:42:22Z"
+                 Content-Type: "application/pdf"
                  */
                 return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(file.get().contentType.toString()))
                     .header(
                         HttpHeaders.CONTENT_DISPOSITION,
-                        ("attachment; filename=\"" + file.get().name).toString() + "\""
+                        ("attachment; filename=\"" + file.get().name).toString() + "\"",
                     )
                     .body(resource)
             } else {
@@ -76,7 +74,6 @@ class FileService(
         } catch (e: Exception) {
             return ResponseEntity.ok().body(null)
         }
-
     }
 
     fun getFilesMetasResponse(tokens: FileMeta): FileMetaResponse<Map<String, Any>> {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
-import java.util.Date
+import java.time.Instant
 import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
@@ -72,7 +72,7 @@ class FileController(
         @RequestPart("content") files: MultipartFile,
         @RequestPart("meta") meta: String,
         @RequestParam("source") source: FileSource,
-        @RequestParam("expireTime") @DateTimeFormat(pattern = com.hrblizz.fileapi.DATE_TIME_FORMAT) expireTime: Date?,
+        @RequestParam("expireTime") @DateTimeFormat(pattern = com.hrblizz.fileapi.DATE_TIME_FORMAT) expireTime: Instant?,
     ): FileResponse<Map<String, Any>> {
         return fileService.saveFiles(files, meta, source, expireTime)
     }

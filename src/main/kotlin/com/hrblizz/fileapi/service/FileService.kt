@@ -15,7 +15,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.util.Date
+import java.time.Instant
 import java.util.UUID
 
 @Service
@@ -134,7 +134,7 @@ class FileService(
         files: MultipartFile,
         meta: String?,
         source: FileSource,
-        expireTime: Date?,
+        expireTime: Instant?,
     ): FileResponse<Map<String, Any>> {
         var metaJson = meta
         try {
@@ -157,7 +157,7 @@ class FileService(
                     it.contentType = files.contentType
                     it.meta = metaJson
                     it.source = source
-                    it.createTime = Date()
+                    it.createTime = Instant.now()
                     it.expireTime = expireTime
                     it.content = files.bytes
                     it.size = files.size

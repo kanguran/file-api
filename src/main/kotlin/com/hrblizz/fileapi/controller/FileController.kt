@@ -4,6 +4,7 @@ import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.FileMetaResponse
 import com.hrblizz.fileapi.payload.response.FileResponse
+import com.hrblizz.fileapi.payload.response.FileUploadResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
@@ -73,7 +74,7 @@ class FileController(
         @RequestPart("meta") meta: String,
         @RequestParam("source") source: FileSource,
         @RequestParam("expireTime") @DateTimeFormat(pattern = com.hrblizz.fileapi.DATE_TIME_FORMAT) expireTime: Instant?,
-    ): FileResponse<Map<String, Any>> {
+    ): FileUploadResponse<Map<String, Any>> {
         return fileService.saveFiles(files, meta, source, expireTime)
     }
 

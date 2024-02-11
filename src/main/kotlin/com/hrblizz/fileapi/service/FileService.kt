@@ -7,6 +7,7 @@ import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.ErrorMessage
 import com.hrblizz.fileapi.payload.response.FileMetaResponse
 import com.hrblizz.fileapi.payload.response.FileResponse
+import com.hrblizz.fileapi.payload.response.FileUploadResponse
 import com.hrblizz.fileapi.repository.FileRepository
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
@@ -125,13 +126,13 @@ class FileService(
         meta: String?,
         source: FileSource,
         expireTime: Instant?,
-    ): FileResponse<Map<String, Any>> {
+    ): FileUploadResponse<Map<String, Any>> {
         var metaJson = meta
         try {
             metaJson = meta?.let { JsonUtil.toJson(meta) }
         } catch (e: Error) {
-            return composeFileResponse(
-                mapOf("" to String),
+            return composeFileUploadResponse(
+                "",
                 "Meta JSON parsing operation failed",
                 HttpStatus.SERVICE_UNAVAILABLE,
             )
@@ -153,14 +154,15 @@ class FileService(
                     it.size = files.size
                 },
             )
-            return composeFileResponse(
-                mapOf(newFileUUID.toString() to String),
-                "Files saved: ",
+
+            return composeFileUploadResponse(
+                newFileUUID.toString(),
+                "",
                 HttpStatus.OK,
             )
         } catch (e: Exception) {
-            return composeFileResponse(
-                mapOf(newFileUUID.toString() to String),
+            return composeFileUploadResponse(
+                newFileUUID.toString(),
                 "Files save operation failed: " + e.message,
                 HttpStatus.SERVICE_UNAVAILABLE,
             )
@@ -174,7 +176,6 @@ class FileService(
          3. Delete file by Uuid.
          */
         try {
-            // TODO load metadata
             var fileTokens = FileMeta()
             fileTokens.tokens = listOf(token.toString())
             var fileResponse = getFilesMetasResponse(fileTokens)
@@ -185,7 +186,7 @@ class FileService(
             return fileResponse
         } catch (e: Exception) {
             return composeFileMetaResponse(
-                mapOf("ok" to false),
+                mapOf(),
                 "Files Delete operation failed:" + e.message,
                 HttpStatus.SERVICE_UNAVAILABLE,
             )
@@ -197,11 +198,19 @@ class FileService(
         message: String,
         httpStatusCode: HttpStatus,
     ): FileResponse<Map<String, Any>> {
-        return FileResponse(
-            response,
-            listOf(ErrorMessage(message, httpStatusCode.value().toString())),
-            httpStatusCode.value(),
-        )
+        if(httpStatusCode == HttpStatus.OK) {
+            return FileResponse(
+                response,
+                null,
+                httpStatusCode.value(),
+            )
+        } else {
+            return FileResponse(
+                response,
+                listOf(ErrorMessage(message, httpStatusCode.value().toString())),
+                httpStatusCode.value(),
+            )
+        }
     }
 
     fun composeFileMetaResponse(
@@ -209,10 +218,38 @@ class FileService(
         message: String,
         httpStatusCode: HttpStatus,
     ): FileMetaResponse<Map<String, Any>> {
-        return FileMetaResponse(
-            response,
-            listOf(ErrorMessage(message, httpStatusCode.value().toString())),
-            httpStatusCode.value(),
-        )
+        if(httpStatusCode == HttpStatus.OK) {
+            return FileMetaResponse(
+                response,
+                null,
+                httpStatusCode.value(),
+            )
+        } else {
+            return FileMetaResponse(
+                response,
+                listOf(ErrorMessage(message, httpStatusCode.value().toString())),
+                httpStatusCode.value(),
+            )
+        }
+    }
+
+    fun composeFileUploadResponse(
+        response: String,
+        message: String,
+        httpStatusCode: HttpStatus,
+    ): FileUploadResponse<Map<String, Any>> {
+        if(httpStatusCode == HttpStatus.OK) {
+            return FileUploadResponse(
+                response,
+                null,
+                httpStatusCode.value(),
+                )
+        } else {
+            return FileUploadResponse(
+                response,
+                listOf(ErrorMessage(message, httpStatusCode.value().toString())),
+                httpStatusCode.value(),
+            )
+        }
     }
 }

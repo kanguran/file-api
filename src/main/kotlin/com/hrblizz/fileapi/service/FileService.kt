@@ -144,7 +144,7 @@ class FileService(
         }
     }
 
-    fun deleteFile(token: UUID): FileResponse<Map<String, Any>> {
+    fun deleteFile(token: UUID): FileMetaResponse<Map<String, Any>> {
         /**
          1. check UUID is valid
          2. check file exists with given UUID
@@ -152,19 +152,16 @@ class FileService(
          */
         try {
             // TODO load metadata
+            var fileTokens = FileMeta()
+            fileTokens.tokens = listOf(token.toString())
+            var fileResponse = getFilesMetasResponse(fileTokens)
+
             if (getFileResponse(token).status == HttpStatus.OK.value()) {
                 entityRepository.deleteById(token)
-
-                return composeFileResponse(mapOf("ok" to true), "Deleted", HttpStatus.OK)
-            } else {
-                return composeFileResponse(
-                    mapOf("ok" to false),
-                    "Files with Given token not found",
-                    HttpStatus.NOT_FOUND,
-                )
             }
+            return fileResponse
         } catch (e: Exception) {
-            return composeFileResponse(
+            return composeFileMetaResponse(
                 mapOf("ok" to false),
                 "Files Delete operation failed:" + e.message,
                 HttpStatus.SERVICE_UNAVAILABLE,
@@ -178,6 +175,18 @@ class FileService(
         httpStatusCode: HttpStatus,
     ): FileResponse<Map<String, Any>> {
         return FileResponse(
+            response,
+            listOf(ErrorMessage(message, httpStatusCode.value().toString())),
+            httpStatusCode.value(),
+        )
+    }
+
+    fun composeFileMetaResponse(
+        response: Map<String, Any>,
+        message: String,
+        httpStatusCode: HttpStatus,
+    ): FileMetaResponse<Map<String, Any>> {
+        return FileMetaResponse(
             response,
             listOf(ErrorMessage(message, httpStatusCode.value().toString())),
             httpStatusCode.value(),

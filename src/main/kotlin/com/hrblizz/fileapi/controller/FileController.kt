@@ -114,7 +114,7 @@ class FileController(
     @DeleteMapping("/file/{token}")
     fun deleteFile(
         @PathVariable token: String,
-    ): FileResponse<Map<String, Any>> {
+    ): FileMetaResponse<Map<String, Any>> {
         return fileService.deleteFile(UUID.fromString(token))
     }
 }

@@ -3,7 +3,6 @@ package com.hrblizz.fileapi.controller
 import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import com.hrblizz.fileapi.payload.response.FileMetaResponse
-import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.payload.response.FileUploadResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.format.annotation.DateTimeFormat

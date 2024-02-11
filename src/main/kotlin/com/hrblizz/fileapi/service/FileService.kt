@@ -10,7 +10,6 @@ import com.hrblizz.fileapi.payload.response.FileResponse
 import com.hrblizz.fileapi.payload.response.FileUploadResponse
 import com.hrblizz.fileapi.repository.FileRepository
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -55,9 +54,9 @@ class FileService(
                 val resource = ByteArrayResource(file.get().content)
                 return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(file.get().contentType.toString()))
-                    .header("X-Filename",file.get().name)
-                    .header("X-Filesize",file.get().size.toString())
-                    .header("X-CreateTime",file.get().createTime.toString())
+                    .header("X-Filename", file.get().name)
+                    .header("X-Filesize", file.get().size.toString())
+                    .header("X-CreateTime", file.get().createTime.toString())
                     .body(resource)
             } else {
                 return ResponseEntity.ok().body(null)
@@ -198,7 +197,7 @@ class FileService(
         message: String,
         httpStatusCode: HttpStatus,
     ): FileResponse<Map<String, Any>> {
-        if(httpStatusCode == HttpStatus.OK) {
+        if (httpStatusCode == HttpStatus.OK) {
             return FileResponse(
                 response,
                 null,
@@ -218,7 +217,7 @@ class FileService(
         message: String,
         httpStatusCode: HttpStatus,
     ): FileMetaResponse<Map<String, Any>> {
-        if(httpStatusCode == HttpStatus.OK) {
+        if (httpStatusCode == HttpStatus.OK) {
             return FileMetaResponse(
                 response,
                 null,
@@ -238,12 +237,12 @@ class FileService(
         message: String,
         httpStatusCode: HttpStatus,
     ): FileUploadResponse<Map<String, Any>> {
-        if(httpStatusCode == HttpStatus.OK) {
+        if (httpStatusCode == HttpStatus.OK) {
             return FileUploadResponse(
                 response,
                 null,
                 httpStatusCode.value(),
-                )
+            )
         } else {
             return FileUploadResponse(
                 response,

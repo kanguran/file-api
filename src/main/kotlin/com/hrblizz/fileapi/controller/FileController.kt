@@ -115,7 +115,6 @@ class FileController(
     fun deleteFile(
         @PathVariable token: String,
     ): FileResponse<Map<String, Any>> {
-        // TODO *GET file metadata endpoint*
         return fileService.deleteFile(UUID.fromString(token))
     }
 }

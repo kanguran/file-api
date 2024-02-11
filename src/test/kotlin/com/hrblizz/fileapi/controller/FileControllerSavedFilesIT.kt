@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class FileController_FilesIT(
+class FileControllerSavedFilesIT(
     @Autowired val fileRepository: FileRepository,
     @Autowired val fileController: FileController,
 ) : AbstractControllerIT() {
@@ -17,8 +17,5 @@ class FileController_FilesIT(
     @Test
     fun testFileSavingWorksThroughFileController() {
         // Given
-
     }
-
-
 }

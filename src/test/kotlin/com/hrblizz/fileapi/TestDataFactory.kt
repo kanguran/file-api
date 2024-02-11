@@ -1,9 +1,9 @@
 package com.hrblizz.fileapi
 
-import com.hrblizz.fileapi.model.*
+import com.hrblizz.fileapi.model.File
 import com.hrblizz.fileapi.model.enumeration.FileSource
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 object TestDataFactory {
     val NOW = Instant.now()

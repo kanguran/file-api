@@ -52,21 +52,11 @@ class FileService(
             val file = entityRepository.findById(token)
             if (file.isPresent) {
                 val resource = ByteArrayResource(file.get().content)
-
-                // TODO: Return Header
-
-                /* HTTP 200
-                 X-Filename: "example.pdf"
-                 X-Filesize: "525"
-                 X-CreateTime: "2019-11-21T15:42:22Z"
-                 Content-Type: "application/pdf"
-                 */
                 return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(file.get().contentType.toString()))
-                    .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        ("attachment; filename=\"" + file.get().name).toString() + "\"",
-                    )
+                    .header("X-Filename",file.get().name)
+                    .header("X-Filesize",file.get().size.toString())
+                    .header("X-CreateTime",file.get().createTime.toString())
                     .body(resource)
             } else {
                 return ResponseEntity.ok().body(null)

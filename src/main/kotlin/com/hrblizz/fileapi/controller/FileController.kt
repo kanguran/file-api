@@ -1,20 +1,26 @@
 package com.hrblizz.fileapi.controller
 
+import com.hrblizz.fileapi.model.FileMeta
 import com.hrblizz.fileapi.model.enumeration.FileSource
+import com.hrblizz.fileapi.payload.response.FileMetaResponse
 import com.hrblizz.fileapi.payload.response.FileResponse
+import com.hrblizz.fileapi.payload.response.FileUploadResponse
 import com.hrblizz.fileapi.service.FileService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
-import java.util.Date
+import java.time.Instant
 import java.util.UUID
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 class FileController(
@@ -33,10 +39,11 @@ class FileController(
     Content-Type: "application/pdf"*/
 
     @GetMapping("/file/{token}")
-    fun getFile(
-        @PathVariable token: UUID,
-    ): FileResponse<Map<String, Any>> {
-        return fileService.getFileResponse(token)
+    fun downloadFile(
+        @PathVariable token: String,
+        request: HttpServletRequest,
+    ): ResponseEntity<Any> {
+        return fileService.getFileBodyResponse(UUID.fromString(token))
     }
 
     /*    *File upload*
@@ -66,8 +73,8 @@ class FileController(
         @RequestPart("content") files: MultipartFile,
         @RequestPart("meta") meta: String,
         @RequestParam("source") source: FileSource,
-        @RequestParam("expireTime") @DateTimeFormat(pattern = com.hrblizz.fileapi.DATE_TIME_FORMAT) expireTime: Date?,
-    ): FileResponse<Map<String, Any>> {
+        @RequestParam("expireTime") @DateTimeFormat(pattern = com.hrblizz.fileapi.DATE_TIME_FORMAT) expireTime: Instant?,
+    ): FileUploadResponse<Map<String, Any>> {
         return fileService.saveFiles(files, meta, source, expireTime)
     }
 
@@ -101,19 +108,17 @@ class FileController(
         }
         }*/
 
-    @PostMapping("/files/metas")
+    @PostMapping("/files/metas", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun getFilesMetas(
-        @RequestPart("tokens") tokens: List<String>,
-    ): FileResponse<Map<String, Any>> {
-        // TODO> call getFilesMetasResponse
-        return fileService.getFileResponse(UUID.fromString(tokens.last()))
+        @RequestBody tokens: FileMeta,
+    ): FileMetaResponse<Map<String, Any>> {
+        return fileService.getFilesMetasResponse(tokens)
     }
 
     @DeleteMapping("/file/{token}")
     fun deleteFile(
         @PathVariable token: String,
-    ): FileResponse<Map<String, Any>> {
-        // TODO *GET file metadata endpoint*
+    ): FileMetaResponse<Map<String, Any>> {
         return fileService.deleteFile(UUID.fromString(token))
     }
 }
